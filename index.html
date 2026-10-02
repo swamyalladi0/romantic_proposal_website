@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#f6b2e2">
+<title>Will You Be Mine? 💗</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Playfair+Display:ital,wght@0,600;1,600&display=swap');
+
+  *{box-sizing:border-box}
+  html,body{margin:0;min-height:100%;font-family:"DM Sans",sans-serif}
+  body{
+    overflow-x:hidden;
+    color:#8f3c78;
+    background:
+      radial-gradient(circle at 20% 15%,rgba(255,255,255,.6),transparent 26%),
+      radial-gradient(circle at 80% 75%,rgba(255,150,220,.25),transparent 28%),
+      linear-gradient(135deg,#ffd3eb 0%,#efd0ff 48%,#ffc6e6 100%);
+  }
+
+  .page{min-height:100vh;position:relative;display:grid;place-items:center;padding:30px 16px;overflow:hidden}
+  .glow{position:absolute;width:42vmax;height:42vmax;border-radius:50%;background:rgba(255,255,255,.22);filter:blur(55px);pointer-events:none}
+  .glow.one{top:-20vmax;left:-15vmax}.glow.two{right:-18vmax;bottom:-20vmax}
+
+  .hearts{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+  .heart{position:absolute;bottom:-50px;font-size:clamp(14px,2.3vw,24px);animation:float linear infinite;opacity:.8}
+  @keyframes float{
+    0%{transform:translateY(0) rotate(0deg) scale(.8);opacity:0}
+    10%{opacity:.9}
+    100%{transform:translateY(-115vh) rotate(35deg) scale(1.15);opacity:0}
+  }
+
+  .card{
+    position:relative;width:min(92vw,520px);min-height:min(760px,90vh);
+    border:1px solid rgba(255,255,255,.55);border-radius:34px;
+    padding:28px clamp(20px,5vw,42px);
+    background:rgba(255,220,243,.32);
+    box-shadow:0 25px 80px rgba(133,57,125,.20),inset 0 1px 0 rgba(255,255,255,.55);
+    backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+    display:flex;flex-direction:column;align-items:center;text-align:center;
+    overflow:hidden;
+  }
+
+  .badge{font-size:11px;letter-spacing:4px;font-weight:700;color:#a448a0;margin-top:8px}
+  h1{font-family:"Playfair Display",serif;font-style:italic;font-size:clamp(34px,8vw,52px);line-height:1.05;margin:22px 0 12px;color:#d33183}
+  .subtitle{max-width:390px;line-height:1.65;font-size:14px;color:#9a578c;margin:0 auto}
+  .hint{font-size:11px;font-style:italic;color:#a65b98;margin-top:auto;margin-bottom:14px}
+
+  .actions{position:relative;display:flex;align-items:center;justify-content:center;gap:0;width:100%;height:100px;margin-top:10px}
+  button{
+    border:0;font:700 15px "DM Sans",sans-serif;cursor:pointer;touch-action:manipulation;
+    transition:transform .2s ease,box-shadow .2s ease,opacity .2s ease;
+  }
+  button:active{transform:scale(.96)}
+  .yes{
+    z-index:2;min-width:112px;padding:16px 30px;border-radius:999px;color:white;
+    background:linear-gradient(135deg,#ff4fa1,#a84be0);
+    box-shadow:0 12px 28px rgba(204,61,153,.30)
+  }
+  .yes:hover{transform:translateY(-2px) scale(1.03)}
+  .no{
+    position:absolute;min-width:108px;padding:14px 28px;border-radius:999px;
+    color:#9650a5;background:rgba(255,255,255,.3);border:1px solid #a34fbb;
+    left:calc(50% + 34px);top:43px;
+  }
+
+  .final{display:none;width:100%;height:100%;flex-direction:column;align-items:center}
+  .final.show{display:flex;animation:pop .65s ease both}
+  .question.hidden{display:none}
+  @keyframes pop{from{opacity:0;transform:scale(.92)}to{opacity:1;transform:scale(1)}}
+  .final h2{font-family:"Playfair Display",serif;font-style:italic;font-size:34px;color:#d33183;margin:50px 0 22px}
+  .cat-wrap{width:min(88%,390px);border:5px solid #f44aa2;border-radius:22px;overflow:hidden;box-shadow:0 10px 35px rgba(181,48,133,.22);background:#d6b3a8}
+  .cat-wrap img{display:block;width:100%;height:auto}
+  .continue{margin-top:22px;padding:14px 35px;border-radius:999px;background:#ffb23e;color:#7d3d52}
+  .continue:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(255,167,57,.3)}
+
+  .message{position:fixed;top:18px;left:50%;transform:translateX(-50%) translateY(-20px);z-index:10;
+    background:#111;color:#fff;padding:10px 16px;border-radius:8px;font-size:13px;font-weight:700;opacity:0;pointer-events:none;transition:.3s}
+  .message.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+  @media (max-width:600px){
+    .page{padding:10px}
+    .card{width:100%;min-height:calc(100vh - 20px);border-radius:26px;padding:25px 18px}
+    .badge{margin-top:12px}
+    h1{margin-top:20px}
+    .actions{margin-top:22px}
+    .no{left:calc(50% + 25px)}
+  }
+  @media (prefers-reduced-motion:reduce){
+    .heart,.final.show{animation:none}
+    *{scroll-behavior:auto!important;transition:none!important}
+  }
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="glow one"></div><div class="glow two"></div>
+  <div class="hearts" id="hearts"></div>
+  <div class="message" id="message"></div>
+
+  <main class="card">
+    <section class="question" id="question">
+      <div class="badge">A SMALL QUESTION</div>
+      <h1>Will you be mine?</h1>
+      <p class="subtitle">There's only one honest answer here — the other one's a little shy and won't sit still long enough to be picked.</p>
+
+      <div class="actions" id="actions">
+        <button class="yes" id="yesBtn">Yes</button>
+        <button class="no" id="noBtn">No</button>
+      </div>
+      <p class="hint" id="hint">come on, you know the answer 💗</p>
+    </section>
+
+    <section class="final" id="final">
+      <div class="badge">IT'S OFFICIAL</div>
+      <h2>love you so much</h2>
+      <div class="cat-wrap">
+        <img src="https://img.freepik.com/premium-photo/closeup-adorable-fluffy-hamster-holding-red-heart-paws-blurred-bokeh-background_646632-11355.jpg" alt="Cute cat saying Muah">
+      </div>
+      <button class="continue" id="continueBtn">Continue</button>
+    </section>
+  </main>
+</div>
+
+<script>
+const hearts = document.getElementById('hearts');
+const heartChars = ['💗','💖','💕','💘','🌸','💝','✨'];
+for(let i=0;i<34;i++){
+  const s=document.createElement('span');
+  s.className='heart';
+  s.textContent=heartChars[Math.floor(Math.random()*heartChars.length)];
+  s.style.left=Math.random()*100+'%';
+  s.style.animationDuration=(5+Math.random()*8)+'s';
+  s.style.animationDelay=(-Math.random()*12)+'s';
+  s.style.fontSize=(12+Math.random()*15)+'px';
+  hearts.appendChild(s);
+}
+
+const noBtn=document.getElementById('noBtn');
+const actions=document.getElementById('actions');
+const hint=document.getElementById('hint');
+let attempts=0;
+
+function moveNo(){
+  attempts++;
+  const rect=actions.getBoundingClientRect();
+  const bw=noBtn.offsetWidth, bh=noBtn.offsetHeight;
+  const maxX=Math.max(0, rect.width-bw);
+  const maxY=Math.max(0, rect.height-bh);
+  noBtn.style.left=Math.random()*maxX+'px';
+  noBtn.style.top=Math.random()*maxY+'px';
+  const hints=[
+    "nice try 😌",
+    "that button is just for decoration 💗",
+    "not an option today, sorry 😭",
+    "you're kidding, right? 🥹",
+    "the universe wants you to click Yes ✨"
+  ];
+  hint.textContent=hints[Math.min(attempts-1,hints.length-1)];
+}
+noBtn.addEventListener('mouseenter',moveNo);
+noBtn.addEventListener('touchstart',(e)=>{e.preventDefault();moveNo()});
+noBtn.addEventListener('click',moveNo);
+
+document.getElementById('yesBtn').addEventListener('click',()=>{
+  document.getElementById('question').classList.add('hidden');
+  document.getElementById('final').classList.add('show');
+  burst();
+});
+
+function burst(){
+  for(let i=0;i<24;i++){
+    const s=document.createElement('span');
+    s.textContent=heartChars[Math.floor(Math.random()*heartChars.length)];
+    s.style.position='fixed';s.style.left='50%';s.style.top='50%';s.style.zIndex='5';
+    s.style.pointerEvents='none';s.style.fontSize=(15+Math.random()*18)+'px';
+    const x=(Math.random()-.5)*window.innerWidth*.9;
+    const y=(Math.random()-.5)*window.innerHeight*.9;
+    s.animate([{transform:'translate(-50%,-50%) scale(.4)',opacity:1},
+               {transform:`translate(calc(-50% + ${x}px),calc(-50% + ${y}px)) scale(1.2)`,opacity:0}],
+               {duration:1000+Math.random()*700,easing:'cubic-bezier(.2,.8,.2,1)'});
+    document.body.appendChild(s);
+    setTimeout(()=>s.remove(),1800);
+  }
+}
+
+document.getElementById('continueBtn').addEventListener('click',()=>{
+  const msg=document.getElementById('message');
+  msg.textContent='💗 You just made this little website very happy.';
+  msg.classList.add('show');
+  setTimeout(()=>msg.classList.remove('show'),2600);
+});
+</script>
+</body>
+</html>
